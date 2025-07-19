@@ -10,7 +10,7 @@ kernel = sk.Kernel()
 api_key, org_id = sk.openai_settings_from_dot_env()
 kernel.add_text_completion_service("dv", OpenAIChatCompletion("gpt-4", api_key, org_id))
 
-with open(Path.cwd() / "src" / "order.txt") as f:
+with open(Path.cwd() / "order.txt") as f:
     order = f.read()
     f.seek(0)
     order_lines = f.readlines()
@@ -26,14 +26,32 @@ for line in order_lines:
 
 
 prompt_prefix = """You are an order counting assistant. Summarize the list into product name and total quantity into a JSON document. Only output the JSON, do not give an explanation.\n"""
-prompt = f"{prompt_prefix}" + "{{$input}}" + "Output:\n"
+
+prompt_examples = """"List:
+1 x apple
+2 x oranges
+3 x fish
+1 x apple
+3 x duck
+Output:
+{
+  "apple": 2,
+  "orange": 2,
+  "fish": 2,
+  "duck": 3
+}
+
+List:"""
+
+prompt = f"{prompt_prefix}{prompt_examples}" + "{{$input}}" + "Output:\n"
+
 summarize = kernel.create_semantic_function(prompt)
 
 # Summarize the list
 summary_result = summarize(order).result
 print("GPT-4 Count", summary_result)
 
-formatted_actual = json.dumps(item_count, indent=4)
+formatted_actual = json.dumps(item_count, indent=2)
 print("Actual Count:")
 print(formatted_actual)
 
