@@ -72,4 +72,4 @@ summarize = kernel.create_semantic_function(prompt, max_tokens=2048, temperature
 summary_result = summarize(order)
 print("GPT-4 Count", summary_result)
 print("Actual Count:")
-print(json.dumps(item_count, indent=4))
+print(json.dumps(item_count, indent=2))
