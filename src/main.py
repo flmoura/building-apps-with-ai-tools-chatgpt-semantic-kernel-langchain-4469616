@@ -42,28 +42,37 @@ def generate_travel_requests(n=5) -> list[str]:
     n: number of requests
     """
     # TODO 1 add prompt
-    system_template_travel_agent = """"""
+    system_template_travel_agent = """Generate one utterance for how someone would travel for a {text}"""
     system_message_prompt = SystemMessagePromptTemplate.from_template(
-        system_template_travel_agent)
+        system_template_travel_agent
+    )
 
     # create full prompt
     chat_prompt = ChatPromptTemplate.from_messages(
-        [system_message_prompt])
+        [system_message_prompt]
+    )
 
     chain = LLMChain(
-        llm=ChatOpenAI(model='gpt-4'),
+        llm=ChatOpenAI(model='gpt-4.1-nano'),
         prompt=chat_prompt
     )
     # TODO 2 return results
+    results = []
+    for _ in range(0, n):
+        results.append(chain.run("beach vacation"))
     return results
 
 
 # generate some requests
-# travel_requests = generate_travel_requests()
-travel_requests = ["I want a beach vacation"]
+travel_requests = generate_travel_requests()
+# travel_requests = ["I want a beach vacation"]
 # print(travel_requests)
+
 # get the recommendations
-
-
 recommendations = generate_travel_recommendations(travel_requests)
-print(recommendations)
+# print(recommendations)
+
+for req, rec in zip(travel_requests, recommendations):
+  print("-" * 120)
+  print(f"- Request:\n{req}\n")
+  print(f"- Recommendation:\n{rec}")
