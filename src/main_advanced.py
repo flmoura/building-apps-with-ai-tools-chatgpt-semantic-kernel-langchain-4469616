@@ -102,13 +102,16 @@ prompt = PromptTemplate(
 )
 
 loader = CSVLoader(
-    file_path="./src/dataset_small.csv", source_column="title", metadata_columns=["categories", "published_year"])
+    file_path="./src/dataset.csv",
+    source_column="title",
+    metadata_columns=["categories", "published_year"]
+)
 
 
 def get_parsed_result(book_request):
     _input = prompt.format_prompt(query=book_request)
 
-    model = ChatOpenAI()
+    model = ChatOpenAI(model="gpt-4.1-nano")
     output = model.predict(_input.to_string())
 
     parsed = parser.parse(output)
@@ -133,7 +136,7 @@ def create_filter(parsed):
 
 data = loader.load()
 
-embeddings = OpenAIEmbeddings()
+embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
 
 quadrant_docsearch = Qdrant.from_documents(
     data,
